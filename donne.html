@@ -331,6 +331,16 @@
     // INIT
     chargerDons();
   </script>
-
+<!-- AVANT </body> dans index.html -->
+<button onclick="speakText()" style="position:fixed;bottom:20px;right:20px;width:70px;height:70px;border-radius:50%;background:#4a7c59;color:white;font-size:2rem;border:none;cursor:pointer;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)">🔊</button>
+<script>
+function speakText(){
+  let text = document.body.innerText.substring(0,300);
+  let utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'fr-FR';
+  utter.rate = 0.9;
+  speechSynthesis.speak(utter);
+}
+</script>
 </body>
 </html>
