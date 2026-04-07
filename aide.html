@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>J'ai besoin d'aide - Le Petit Village de Trég'Union</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #fdf6ed 0%, #f5e6d3 100%);
+      min-height: 100vh;
+      font-family: 'Cormorant Garamond', serif;
+      padding: 20px;
+    }
+    .header {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 30px; flex-wrap: wrap;
+    }
+    .logo img { width: 80px; height: auto; }
+    .header h1 { font-size: 32px; font-weight: 700; color: #6b3fa0; }
+    .retour {
+      margin-left: auto;
+      background: rgba(107,63,160,0.1);
+      border: none; border-radius: 12px;
+      padding: 10px 20px; font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; color: #6b3fa0; cursor: pointer;
+      text-decoration: none;
+    }
+    .retour:hover { background: rgba(107,63,160,0.2); }
+    .container { max-width: 700px; margin: 0 auto; }
+
+    .subcats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px; margin-bottom: 24px;
+    }
+    .subcat-btn {
+      background: rgba(255,255,255,0.7);
+      border: 2px solid rgba(107,63,160,0.2);
+      border-radius: 14px; padding: 18px 14px;
+      cursor: pointer; text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; font-weight: 700; color: #3a2010;
+      transition: all 0.2s;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .subcat-btn .emoji { font-size: 2rem; }
+    .subcat-btn:hover { border-color: #6b3fa0; background: rgba(107,63,160,0.08); transform: translateY(-2px); }
+    .subcat-btn.selected { border-color: #6b3fa0; background: rgba(107,63,160,0.12); }
+
+    .form-card {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 20px; padding: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      margin-bottom: 30px; display: none;
+    }
+    .form-card.visible { display: block; }
+    .form-card h2 { font-size: 26px; color: #4a2870; margin-bottom: 20px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block; font-size: 18px; font-weight: 600;
+      color: #6b3fa0; margin-bottom: 6px;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%; padding: 14px 16px;
+      border: 2px solid #e8d0b5; border-radius: 12px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; color: #3a2010;
+      background: rgba(253,246,237,0.9);
+      outline: none; transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: #6b3fa0; }
+    .form-group textarea { min-height: 120px; resize: vertical; }
+
+    .phrase-type {
+      background: rgba(245,200,66,0.12);
+      border-left: 3px solid #F5C842;
+      padding: 10px 14px; border-radius: 0 10px 10px 0;
+      font-size: 16px; color: #6b4c35; font-style: italic;
+      margin-bottom: 16px;
+    }
+
+    .btn-publier {
+      width: 100%; padding: 18px;
+      background: linear-gradient(135deg, #6b3fa0, #4a2870);
+      color: #fff; border: none; border-radius: 14px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 700; cursor: pointer;
+      transition: transform 0.2s;
+      box-shadow: 0 4px 15px rgba(107,63,160,0.3);
+    }
+    .btn-publier:hover { transform: translateY(-2px); }
+
+    .annonces-titre {
+      font-size: 26px; font-weight: 700; color: #4a2870;
+      margin-bottom: 20px; padding-bottom: 10px;
+      border-bottom: 2px solid #e8d0b5;
+    }
+    .annonce-card {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 20px; padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+    }
+    .annonce-prenom { font-size: 22px; font-weight: 700; color: #6b3fa0; }
+    .annonce-date { font-size: 14px; color: #9b7b5a; margin-left: 10px; }
+    .annonce-badge {
+      display: inline-block;
+      background: rgba(107,63,160,0.12);
+      color: #4a2870; border: 1px solid rgba(107,63,160,0.25);
+      border-radius: 20px; padding: 3px 14px;
+      font-size: 14px; font-weight: 700; margin: 8px 0;
+    }
+    .annonce-quoi { font-size: 19px; color: #3a2010; margin: 8px 0 14px; line-height: 1.5; }
+
+    .reponses-zone { border-top: 1px solid #e8d0b5; padding-top: 14px; margin-top: 14px; }
+    .reponse-item {
+      background: rgba(245,230,211,0.6);
+      border-radius: 12px; padding: 10px 14px;
+      margin-bottom: 8px; font-size: 17px;
+    }
+    .reponse-item strong { color: #6b3fa0; }
+    .btn-interesse {
+      background: none; border: 2px solid #F5C842;
+      border-radius: 12px; padding: 12px 24px;
+      color: #6b3fa0; font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; margin-top: 8px;
+    }
+    .btn-interesse:hover { background: rgba(245,200,66,0.15); transform: translateY(-1px); }
+    .form-reponse {
+      display: none; margin-top: 12px;
+      background: rgba(253,246,237,0.9);
+      border: 1.5px solid #e8d0b5;
+      border-radius: 12px; padding: 16px;
+    }
+    .form-reponse.visible { display: block; }
+    .form-reponse input,
+    .form-reponse textarea {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid #e8d0b5; border-radius: 10px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px; color: #3a2010;
+      background: white; margin-bottom: 10px; outline: none;
+    }
+    .form-reponse textarea { min-height: 70px; resize: vertical; }
+    .btn-envoyer {
+      background: linear-gradient(135deg, #6b3fa0, #4a2870);
+      color: white; border: none; border-radius: 10px;
+      padding: 12px 24px; font-family: 'Cormorant Garamond', serif;
+      font-size: 17px; font-weight: 700; cursor: pointer;
+    }
+    .vide { font-size: 18px; color: #9b7b5a; font-style: italic; padding: 20px 0; }
+    .toast {
+      display: none; position: fixed; bottom: 30px; left: 50%;
+      transform: translateX(-50%);
+      background: #4a2870; color: white;
+      padding: 14px 28px; border-radius: 40px;
+      font-size: 18px; font-weight: 700;
+      box-shadow: 0 6px 28px rgba(74,40,112,0.4);
+      z-index: 999;
+    }
+    .toast.visible { display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <div class="logo"><img src="logo.png" alt="Logo Trég'Union"></div>
+      <h1>🆘 J'ai besoin d'aide</h1>
+      <a href="index.html" class="retour">← Retour</a>
+    </div>
+
+    <div class="subcats">
+      <div class="subcat-btn" onclick="selCat('info', this)">
+        <span class="emoji">💻</span>Informatique
+      </div>
+      <div class="subcat-btn" onclick="selCat('transport', this)">
+        <span class="emoji">🚗</span>Transport
+      </div>
+      <div class="subcat-btn" onclick="selCat('bricolage', this)">
+        <span class="emoji">🏠</span>Bricolage
+      </div>
+      <div class="subcat-btn" onclick="selCat('admin', this)">
+        <span class="emoji">📋</span>Administratif
+      </div>
+      <div class="subcat-btn" onclick="selCat('courses', this)">
+        <span class="emoji">🛒</span>Courses
+      </div>
+      <div class="subcat-btn" onclick="selCat('jardin', this)">
+        <span class="emoji">🌿</span>Jardin
+      </div>
+      <div class="subcat-btn" onclick="selCat('demenagement', this)">
+        <span class="emoji">📦</span>Déménagement
+      </div>
+    </div>
+
+    <div class="form-card" id="form-aide">
+      <h2 id="form-titre">Demander de l'aide</h2>
+      <div class="phrase-type" id="phrase-aide"></div>
+      <div class="form-group">
+        <label>Votre prénom</label>
+        <input type="text" id="a-prenom" placeholder="Ex : Robert">
+      </div>
+      <div class="form-group">
+        <label>De quoi avez-vous besoin ?</label>
+        <textarea id="a-quoi" placeholder="Décrivez votre besoin simplement…"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Votre email (pour être prévenu des réponses)</label>
+        <input type="email" id="a-email" placeholder="votre@email.fr">
+      </div>
+      <button class="btn-publier" onclick="publierAide()">✓ Publier ma demande</button>
+    </div>
+
+    <div class="annonces-titre">Demandes d'aide en cours</div>
+    <div id="liste-aides"><p class="vide">Aucune demande pour le moment.</p></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const phrases = {
+      info: 'J\'ai un problème avec mon ordinateur / téléphone et je ne sais pas comment faire…',
+      transport: 'Je dois me rendre à ___ et je n\'ai pas de voiture. Quelqu\'un pourrait m\'emmener ?',
+      bricolage: 'J\'ai besoin d\'aide pour ___. Je ne m\'en sors pas seul(e).',
+      admin: 'J\'ai un formulaire / courrier administratif et je ne comprends pas bien comment le remplir.',
+      courses: 'Je ne peux pas sortir facilement. Quelqu\'un pourrait faire quelques courses pour moi ?',
+      jardin: 'Mon jardin a besoin d\'un coup de main : ___. Je n\'y arrive plus seul(e).',
+      demenagement: 'Je déménage / déplace des meubles et j\'aurais besoin d\'un coup de main.'
+    };
+
+    const titres = {
+      info: '💻 Aide Informatique',
+      transport: '🚗 Aide Transport',
+      bricolage: '🏠 Aide Bricolage',
+      admin: '📋 Aide Administrative',
+      courses: '🛒 Aide Courses',
+      jardin: '🌿 Aide Jardin',
+      demenagement: '📦 Aide Déménagement'
+    };
+
+    let catSelectionnee = '';
+
+    function selCat(cat, el) {
+      document.querySelectorAll('.subcat-btn').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+      catSelectionnee = cat;
+      document.getElementById('phrase-aide').textContent = '💡 ' + phrases[cat];
+      document.getElementById('form-titre').textContent = titres[cat];
+      const form = document.getElementById('form-aide');
+      form.classList.add('visible');
+      form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('visible');
+      setTimeout(() => t.classList.remove('visible'), 3500);
+    }
+
+    function dateStr(d) {
+      return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+    }
+
+    function escHtml(s) {
+      if (!s) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    async function chargerAides() {
+      try {
+        const r = await fetch('https://tregunion-worker.brunoduboy.workers.dev/api/annonces?type=aide');
+        const annonces = await r.json();
+        const cont = document.getElementById('liste-aides');
+        if (!annonces.length) {
+          cont.innerHTML = '<p class="vide">Aucune demande pour le moment.</p>';
+          return;
+        }
+        cont.innerHTML = annonces.map(a => renderAnnonce(a)).join('');
+      } catch(e) { console.error(e); }
+    }
+
+    function renderAnnonce(a) {
+      return `<div class="annonce-card" id="annonce-${a.id}">
+        <div>
+          <span class="annonce-prenom">${escHtml(a.prenom)}</span>
+          <span class="annonce-date">${dateStr(a.date)}</span>
+        </div>
+        <div class="annonce-badge">${escHtml(a.categorie)}</div>
+        <div class="annonce-quoi">${escHtml(a.quoi)}</div>
+        <div class="reponses-zone" id="rep-${a.id}"></div>
+        <button class="btn-interesse" onclick="toggleReponse('${a.id}')">🙋 Je peux aider !</button>
+        <div class="form-reponse" id="fr-${a.id}">
+          <input type="text" id="fpr-prenom-${a.id}" placeholder="Votre prénom">
+          <textarea id="fpr-msg-${a.id}" placeholder="Votre message…"></textarea>
+          <button class="btn-envoyer" onclick="envoyerReponse('${a.id}')">Envoyer ma réponse</button>
+        </div>
+      </div>`;
+    }
+
+    async function chargerReponses(annonce_id) {
+      try {
+        const r = await fetch('https://tregunion-worker.brunoduboy.workers.dev/api/reponses?annonce_id=' + annonce_id);
+        const reps = await r.json();
+        const cont = document.getElementById('rep-' + annonce_id);
+        if (!cont || !reps.length) return;
+        cont.innerHTML = `<div style="font-size:15px;font-weight:700;color:#9b7b5a;margin-bottom:8px;">💬 ${reps.length} réponse(s) :</div>` +
+          reps.map(r => `<div class="reponse-item"><strong>${escHtml(r.prenom)}</strong> : ${escHtml(r.message)}</div>`).join('');
+      } catch(e) {}
+    }
+
+    function toggleReponse(id) {
+      document.getElementById('fr-' + id).classList.toggle('visible');
+    }
+
+    async function publierAide() {
+      const prenom = document.getElementById('a-prenom').value.trim();
+      const quoi = document.getElementById('a-quoi').value.trim();
+      const email = document.getElementById('a-email').value.trim();
+      if (!prenom || !quoi || !email || !catSelectionnee) {
+        showToast('⚠️ Merci de choisir une catégorie et remplir tous les champs.'); return;
+      }
+      try {
+        const r = await fetch('https://tregunion-worker.brunoduboy.workers.dev/api/annonces', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'aide', prenom, quoi, categorie: catSelectionnee, description: '', email })
+        });
+        const data = await r.json();
+        if (data.success) {
+          ['a-prenom','a-quoi','a-email'].forEach(id => document.getElementById(id).value = '');
+          document.getElementById('form-aide').classList.remove('visible');
+          document.querySelectorAll('.subcat-btn').forEach(b => b.classList.remove('selected'));
+          catSelectionnee = '';
+          showToast('🆘 Votre demande a bien été publiée !');
+          chargerAides();
+        }
+      } catch(e) {
+        showToast('❌ Une erreur est survenue, réessayez.');
+      }
+    }
+
+    async function envoyerReponse(annonce_id) {
+      const prenom = document.getElementById('fpr-prenom-' + annonce_id).value.trim();
+      const message = document.getElementById('fpr-msg-' + annonce_id).value.trim();
+      if (!prenom || !message) {
+        showToast('⚠️ Merci d\'entrer votre prénom et votre message.'); return;
+      }
+      try {
+        const r = await fetch('https://tregunion-worker.brunoduboy.workers.dev/api/reponses', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ annonce_id, prenom, message })
+        });
+        const data = await r.json();
+        if (data.success) {
+          document.getElementById('fpr-prenom-' + annonce_id).value = '';
+          document.getElementById('fpr-msg-' + annonce_id).value = '';
+          document.getElementById('fr-' + annonce_id).classList.remove('visible');
+          chargerReponses(annonce_id);
+          showToast('✅ Votre réponse a été envoyée !');
+        }
+      } catch(e) {
+        showToast('❌ Une erreur est survenue, réessayez.');
+      }
+    }
+
+    chargerAides();
+  </script>
+
+</body>
+</html>

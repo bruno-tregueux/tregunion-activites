@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Je troque - Le Petit Village de Trég'Union</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #fdf6ed 0%, #f5e6d3 100%);
+      min-height: 100vh;
+      font-family: 'Cormorant Garamond', serif;
+      padding: 20px;
+    }
+    .header {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 30px; flex-wrap: wrap;
+    }
+    .logo img { width: 80px; height: auto; }
+    .header h1 { font-size: 32px; font-weight: 700; color: #2d6a4f; }
+    .retour {
+      margin-left: auto;
+      background: rgba(45,106,79,0.1);
+      border: none; border-radius: 12px;
+      padding: 10px 20px; font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; color: #2d6a4f; cursor: pointer;
+      text-decoration: none;
+    }
+    .retour:hover { background: rgba(45,106,79,0.2); }
+    .container { max-width: 700px; margin: 0 auto; }
+
+    .form-card {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 20px; padding: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+    }
+    .form-card h2 { font-size: 26px; color: #1b4332; margin-bottom: 20px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block; font-size: 18px; font-weight: 600;
+      color: #2d6a4f; margin-bottom: 6px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%; padding: 14px 16px;
+      border: 2px solid #e8d0b5; border-radius: 12px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; color: #3a2010;
+      background: rgba(253,246,237,0.9);
+      outline: none; transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: #2d6a4f; }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+
+    .phrase-type {
+      background: rgba(245,200,66,0.12);
+      border-left: 3px solid #F5C842;
+      padding: 10px 14px; border-radius: 0 10px 10px 0;
+      font-size: 16px; color: #6b4c35; font-style: italic;
+      margin-bottom: 12px; display: none;
+    }
+
+    .btn-publier {
+      width: 100%; padding: 18px;
+      background: linear-gradient(135deg, #2d6a4f, #1b4332);
+      color: #d8f3dc; border: none; border-radius: 14px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 700; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 15px rgba(27,67,50,0.3);
+    }
+    .btn-publier:hover { transform: translateY(-2px); }
+
+    .annonces-titre {
+      font-size: 26px; font-weight: 700; color: #1b4332;
+      margin-bottom: 20px; padding-bottom: 10px;
+      border-bottom: 2px solid #e8d0b5;
+    }
+    .annonce-card {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 20px; padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+    }
+    .annonce-prenom { font-size: 22px; font-weight: 700; color: #2d6a4f; }
+    .annonce-date { font-size: 14px; color: #9b7b5a; margin-left: 10px; }
+    .annonce-badge {
+      display: inline-block;
+      background: rgba(45,106,79,0.15);
+      color: #1b4332; border: 1px solid rgba(45,106,79,0.3);
+      border-radius: 20px; padding: 3px 14px;
+      font-size: 14px; font-weight: 700; margin: 8px 0;
+    }
+    .annonce-quoi { font-size: 22px; font-weight: 600; color: #3a2010; margin: 8px 0 6px; }
+    .annonce-desc { font-size: 17px; color: #6b4c35; margin-bottom: 14px; }
+    .annonce-echange {
+      font-size: 17px; color: #2d6a4f; font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .reponses-zone { border-top: 1px solid #e8d0b5; padding-top: 14px; margin-top: 14px; }
+    .reponse-item {
+      background: rgba(245,230,211,0.6);
+      border-radius: 12px; padding: 10px 14px;
+      margin-bottom: 8px; font-size: 17px;
+    }
+    .reponse-item strong { color: #2d6a4f; }
+    .btn-interesse {
+      background: none; border: 2px solid #F5C842;
+      border-radius: 12px; padding: 12px 24px;
+      color: #2d6a4f; font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; margin-top: 8px;
+    }
+    .btn-interesse:hover { background: rgba(245,200,66,0.15); transform: translateY(-1px); }
+    .form-reponse {
+      display: none; margin-top: 12px;
+      background: rgba(253,246,237,0.9);
+      border: 1.5px solid #e8d0b5;
+      border-radius: 12px; padding: 16px;
+    }
+    .form-reponse.visible { display: block; }
+    .form-reponse input,
+    .form-reponse textarea {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid #e8d0b5; border-radius: 10px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px; color: #3a2010;
+      background: white; margin-bottom: 10px; outline: none;
+    }
+    .form-reponse textarea { min-height: 70px; resize: vertical; }
+    .btn-envoyer {
+      background: linear-gradient(135deg, #2d6a4f, #1b4332);
+      color: white; border: none; border-radius: 10px;
+      padding: 12px 24px; font-family: 'Cormorant Garamond', serif;
+      font-size: 17px; font-weight: 700; cursor: pointer;
+    }
+    .vide { font-size: 18px; color: #9b7b5a; font-style: italic; padding: 20px 0; }
+    .toast {
+      display: none; position: fixed; bottom: 30px; left: 50%;
+      transform: translateX(-50%);
+      background: #1b4332; color: white;
+      padding: 14px 28px; border-radius: 40px;
+      font-size: 18px; font-weight: 700;
+      box-shadow: 0 6px 28px rgba(27,67,50,0.4);
+      z-index: 999;
+    }
+    .toast.visible { display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <div class="logo"><img src="logo.png" alt="Logo Trég'Union"></div>
+      <h1>🔄 Je troque</h1>
+      <a href="index.html" class="retour">← Retour</a>
+    </div>
+
+    <div class="form-card">
+      <h2>Proposer un troc</h2>
+      <div class="form-group">
+        <label>Votre prénom</label>
+        <input type="text" id="t-prenom" placeholder="Ex : Jean">
+      </div>
+      <div class="form-group">
+        <label>Catégorie</label>
+        <select id="t-cat" onchange="afficherPhrase()">
+          <option value="">— Choisissez —</option>
+          <option value="livres">📚 Livres</option>
+          <option value="jeux">🎲 Jeux de société</option>
+          <option value="jardin">🌿 Produits du jardin</option>
+          <option value="autre">📦 Autre</option>
+        </select>
+      </div>
+      <div class="phrase-type" id="phrase-troc"></div>
+      <div class="form-group">
+        <label>Ce que je propose</label>
+        <input type="text" id="t-propose" placeholder="Ex : Des courgettes du jardin">
+      </div>
+      <div class="form-group">
+        <label>Ce que je cherche en échange</label>
+        <input type="text" id="t-cherche" placeholder="Ex : Des pommes de terre">
+      </div>
+      <div class="form-group">
+        <label>Description (optionnelle)</label>
+        <textarea id="t-desc" placeholder="Quantité, précisions…"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Votre email (pour être prévenu des réponses)</label>
+        <input type="email" id="t-email" placeholder="votre@email.fr">
+      </div>
+      <button class="btn-publier" onclick="publierTroc()">✓ Publier mon troc</button>
+    </div>
+
+    <div class="annonces-titre">Les trocs en cours</div>
+    <div id="liste-trocs"><p class="vide">Aucun troc pour le moment. Soyez le premier !</p></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const phrasesTroc = {
+      livres: 'J\'ai lu ___ et je le propose en échange d\'un autre livre.',
+      jeux: 'J\'ai le jeu ___ que je n\'utilise plus. Je l\'échange contre ___.',
+      jardin: 'Mon jardin m\'a gâté en _____, je l\'échange contre _____.',
+      autre: 'Je propose ___ en échange de ___.'
+    };
+
+    function afficherPhrase() {
+      const v = document.getElementById('t-cat').value;
+      const ph = document.getElementById('phrase-troc');
+      if (v && phrasesTroc[v]) {
+        ph.textContent = '💡 ' + phrasesTroc[v];
+        ph.style.display = 'block';
+      } else {
+        ph.style.display = 'none';
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('visible');
+      setTimeout(() => t.classList.remove('visible'), 3500);
+    }
+
+    function dateStr(d) {
+      return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+    }
+
+    function escHtml(s) {
+      if (!s) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    async function chargerTrocs() {
+      try {
+        const r = await fetch('https://tregunion-worker.brunoduboy.workers.dev/api/annonces?type=troc');
+        const annonces = await r.json();
+        const cont = document.getElementById('liste-trocs');
+        if (!annonces.length) {
+          cont.innerHTML = '<p class="vide">Aucun troc pour le moment. Soyez le premier !</p>';
+          return;
+        }
+        cont.innerHTML = annonces.map(a => renderAnnonce(a)).join('');
+      } catch(e) { console.error(e); }
+    }
+
+    function renderAnnonce(a) {
+      return `<div class="annonce-card" id="annonce-${a.id}">
+        <div>
+          <span class="annonce-prenom">${escHtml(a.prenom)}</span>
+          <span class="annonce-date">${dateStr(a.date)}</span>
+        </div>
+        <div class="annonce-badge">${escHtml(a.categorie)}</div>
+        <div class="annonce-quoi">Je propose : ${escHtml(a.quoi)}</div>
+        <div class="annonce-echange">🔄 En échange de : ${escHtml(a.description)}</div>
+        <div class="reponses-zone" id="rep-${a.id}"></div>
+        <button class="btn-interesse" onclick="toggleReponse('${a.id}')">✋ Je suis intéressé(e) !</button>
+        <div class="form-reponse" id="fr-${a.id}">
+          <input type="text" id="fpr-prenom-${a.id}" placeholder="Votre prénom">
+          <textarea id="fpr-msg-${a.id}" placeholder="Votre message…"></textarea>
+          <button class="btn-envoyer" onclick="envoyerReponse('${a.id}')">Envoyer ma réponse</button>
+        </div>
+      </div>`;
+    }
+
+    async function chargerReponses(annonce_id) {
+      try {
+        const r = await fetch('https://tregunion-worker.brunoduboy.workers.dev/api/reponses?annonce_id=' + annonce_id);
+        const reps = await r.json();
+        const cont = document.getElementById('rep-' + annonce_id);
+        if (!cont || !reps.length) return;
+        cont.innerHTML = `<div style="font-size:15px;font-weight:700;color:#9b7b5a;margin-bottom:8px;">💬 ${reps.length} réponse(s) :</div>` +
+          reps.map(r => `<div class="reponse-item"><strong>${escHtml(r.prenom)}</strong> : ${escHtml(r.message)}</div>`).join('');
+      } catch(e) {}
+    }
+
+    function toggleReponse(id) {
+      document.getElementById('fr-' + id).classList.toggle('visible');
+    }
+
+    async function publierTroc() {
+      const prenom = document.getElementById('t-prenom').value.trim();
+      const categorie = document.getElementById('t-cat').value;
+      const propose = document.getElementById('t-propose').value.trim();
+      const cherche = document.getElementById('t-cherche').value.trim();
+      const desc = document.getElementById('t-desc').value.trim();
+      const email = document.getElementById('t-email').value.trim();
+      if (!prenom || !categorie || !propose || !cherche || !email) {
+        showToast('⚠️ Merci de remplir tous les champs obligatoires.'); return;
+      }
+      try {
+        const r = await fetch('https://tregunion-worker.brunoduboy.workers.dev/api/annonces', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'troc', prenom, quoi: propose, categorie, description: cherche + (desc ? ' — ' + desc : ''), email })
+        });
+        const data = await r.json();
+        if (data.success) {
+          ['t-prenom','t-propose','t-cherche','t-desc','t-email'].forEach(id => document.getElementById(id).value = '');
+          document.getElementById('t-cat').value = '';
+          document.getElementById('phrase-troc').style.display = 'none';
+          showToast('🔄 Votre troc a bien été publié !');
+          chargerTrocs();
+        }
+      } catch(e) {
+        showToast('❌ Une erreur est survenue, réessayez.');
+      }
+    }
+
+    async function envoyerReponse(annonce_id) {
+      const prenom = document.getElementById('fpr-prenom-' + annonce_id).value.trim();
+      const message = document.getElementById('fpr-msg-' + annonce_id).value.trim();
+      if (!prenom || !message) {
+        showToast('⚠️ Merci d\'entrer votre prénom et votre message.'); return;
+      }
+      try {
+        const r = await fetch('https://tregunion-worker.brunoduboy.workers.dev/api/reponses', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ annonce_id, prenom, message })
+        });
+        const data = await r.json();
+        if (data.success) {
+          document.getElementById('fpr-prenom-' + annonce_id).value = '';
+          document.getElementById('fpr-msg-' + annonce_id).value = '';
+          document.getElementById('fr-' + annonce_id).classList.remove('visible');
+          chargerReponses(annonce_id);
+          showToast('✅ Votre réponse a été envoyée !');
+        }
+      } catch(e) {
+        showToast('❌ Une erreur est survenue, réessayez.');
+      }
+    }
+
+    chargerTrocs();
+  </script>
+
+</body>
+</html>

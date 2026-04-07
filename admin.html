@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration - Petit Village</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #fdf6ed 0%, #f5e6d3 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.95);
+      border-radius: 30px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    h1 { color: #b5451b; margin-bottom: 20px; }
+    .login-box {
+      max-width: 400px;
+      margin: 100px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #e8d0b5;
+      border-radius: 30px;
+      font-size: 16px;
+    }
+    .login-box button {
+      background: #b5451b;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .tab {
+      padding: 10px 20px;
+      background: #e8d0b5;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .tab.active {
+      background: #b5451b;
+      color: white;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 16px;
+      overflow-x: auto;
+      display: block;
+      margin-top: 15px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e8d0b5;
+      vertical-align: top;
+    }
+    th {
+      background: #b5451b;
+      color: white;
+      position: sticky;
+      top: 0;
+    }
+    tr:hover { background: #fdf6ed; }
+    button.edit, button.delete {
+      color: white;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      margin: 2px;
+    }
+    button.edit { background: #e08e2a; }
+    button.delete { background: #b5451b; }
+    .stats {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 20px;
+      flex: 1;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #b5451b;
+    }
+    button.export {
+      background: #2c7a4d;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 30px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .container { box-shadow: none; padding: 10px; }
+      .tabs, .export, button { display: none; }
+      table { display: table; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+  // Mot de passe (à changer si besoin)
+  const ADMIN_PASSWORD = "bruno";
+
+  let benevoles = [];
+  let messages = [];
+  let isLoggedIn = false;
+
+  function showLogin() {
+    document.getElementById('app').innerHTML = `
+      <div class="login-box">
+        <h2>🔐 Accès administration</h2>
+        <input type="password" id="password" placeholder="Mot de passe" autofocus>
+        <button onclick="login()">Se connecter</button>
+      </div>
+    `;
+  }
+
+  async function login() {
+    const pwd = document.getElementById('password').value;
+    if (pwd === ADMIN_PASSWORD) {
+      isLoggedIn = true;
+      await loadData();
+      renderAdmin();
+    } else {
+      alert('Mot de passe incorrect');
+    }
+  }
+
+  async function loadData() {
+    try {
+      const [resBenevoles, resMessages] = await Promise.all([
+        fetch('https://tregunion-worker.brunoduboy.workers.dev/api/benevoles'),
+        fetch('https://tregunion-worker.brunoduboy.workers.dev/api/reponses')
+      ]);
+      benevoles = await resBenevoles.json();
+      messages = await resMessages.json();
+    } catch(e) {
+      console.error('Erreur chargement données', e);
+    }
+  }
+
+  async function deleteBenevole(id) {
+    if (confirm('Supprimer ce bénévole ?')) {
+      // Désactivation logique (actif = 0) via une requête PUT ou DELETE
+      // Pour l'instant, on utilise DELETE avec paramètre mdp (simple)
+      const res = await fetch(`/api/admin/benevoles/${id}?mdp=${ADMIN_PASSWORD}`, { method: 'DELETE' });
+      if (res.ok) {
+        await loadData();
+        renderAdmin();
+      } else {
+        alert('Erreur lors de la suppression');
+      }
+    }
+  }
+
+  async function editBenevole(b) {
+    const newNom = prompt('Nouveau prénom/nom', b.prenom || b.nom);
+    if (!newNom) return;
+    const newEmail = prompt('Nouvel email', b.email);
+    if (!newEmail) return;
+    // Mise à jour via PUT
+    const res = await fetch(`/api/admin/benevoles/${b.id}?mdp=${ADMIN_PASSWORD}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prenom: newNom,
+        email: newEmail,
+        competences: b.competences,
+        autreTexte: b.autreTexte,
+        photo: b.photo,
+        description: b.description
+      })
+    });
+    if (res.ok) {
+      await loadData();
+      renderAdmin();
+    } else {
+      alert('Erreur modification');
+    }
+  }
+
+  async function deleteMessage(id) {
+    if (confirm('Supprimer ce message définitivement ?')) {
+      const res = await fetch(`/api/admin/reponses/${id}?mdp=${ADMIN_PASSWORD}`, { method: 'DELETE' });
+      if (res.ok) {
+        await loadData();
+        renderAdmin();
+      } else {
+        alert('Erreur suppression message');
+      }
+    }
+  }
+
+  function exportMessagesCSV() {
+    if (!messages.length) { alert('Aucun message'); return; }
+    const headers = ['ID', 'Annonce ID', 'Prénom', 'Email', 'Message', 'Date'];
+    const rows = messages.map(m => [
+      m.id,
+      m.annonce_id,
+      m.prenom || '',
+      m.email_demandeur || '',
+      m.message || '',
+      new Date(m.date).toLocaleString()
+    ]);
+    const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'messages.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
+  function renderAdmin() {
+    // Onglets
+    const tabsHtml = `
+      <div class="tabs">
+        <div class="tab active" data-tab="benevoles">📋 Bénévoles (${benevoles.length})</div>
+        <div class="tab" data-tab="messages">✉️ Messages (${messages.length})</div>
+        <div class="tab" data-tab="rapports">📊 Rapports</div>
+      </div>
+      <div id="tabBenevoles" class="tab-content">
+        <h3>Liste des bénévoles</h3>
+        <table>
+          <thead><tr><th>ID</th><th>Prénom</th><th>Email</th><th>Compétences</th><th>Actions</th</tr></thead>
+          <tbody>
+            ${benevoles.map(b => `
+              <tr>
+                <td>${b.id}</td>
+                <td>${escapeHtml(b.prenom || b.nom)}</td>
+                <td>${escapeHtml(b.email)}</td>
+                <td>${b.competences ? (Array.isArray(b.competences) ? b.competences.join(', ') : b.competences) : ''}</td>
+                <td>
+                  <button class="edit" onclick="editBenevole(${JSON.stringify(b).replace(/"/g, '&quot;')})">✏️</button>
+                  <button class="delete" onclick="deleteBenevole('${b.id}')">🗑️</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div id="tabMessages" class="tab-content" style="display:none;">
+        <h3>Messages reçus</h3>
+        <button class="export" onclick="exportMessagesCSV()">📥 Exporter CSV</button>
+        <table>
+          <thead><tr><th>ID</th><th>Annonce ID</th><th>Prénom</th><th>Email</th><th>Message</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody>
+            ${messages.map(m => `
+              <tr>
+                <td>${m.id}</td>
+                <td>${m.annonce_id}</td>
+                <td>${escapeHtml(m.prenom)}</td>
+                <td>${escapeHtml(m.email_demandeur || '')}</td>
+                <td>${escapeHtml(m.message)}</td>
+                <td>${new Date(m.date).toLocaleString()}</td>
+                <td><button class="delete" onclick="deleteMessage('${m.id}')">🗑️</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div id="tabRapports" class="tab-content" style="display:none;">
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-number">${messages.length}</div>
+            <div>Messages envoyés</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">${benevoles.length}</div>
+            <div>Bénévoles actifs</div>
+          </div>
+        </div>
+        <button class="export" onclick="exportMessagesCSV()">📥 Exporter tous les messages (CSV)</button>
+      </div>
+    `;
+    document.getElementById('app').innerHTML = `<div class="container"><h1>👑 Administration - Petit Village</h1>${tabsHtml}</div>`;
+
+    // Gestion des onglets
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const tabId = tab.getAttribute('data-tab');
+        document.getElementById('tabBenevoles').style.display = tabId === 'benevoles' ? 'block' : 'none';
+        document.getElementById('tabMessages').style.display = tabId === 'messages' ? 'block' : 'none';
+        document.getElementById('tabRapports').style.display = tabId === 'rapports' ? 'block' : 'none';
+      });
+    });
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // Initialisation
+  if (isLoggedIn) {
+    loadData().then(() => renderAdmin());
+  } else {
+    showLogin();
+  }
+</script>
+</body>
+</html>
