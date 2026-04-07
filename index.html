@@ -57,6 +57,31 @@
       });
     });
   });
-  </script>
+  <script>
+// UNIVERSAL : TOUS liens # + bannières vertes
+document.addEventListener('DOMContentLoaded', function() {
+  // Liens #ancre
+  document.querySelectorAll('a[href*="#"]').forEach(link => {
+    link.style.cursor = 'pointer';
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const href = link.getAttribute('href');
+      const target = document.querySelector(href);
+      target?.scrollIntoView({behavior: 'smooth'});
+    });
+  });
+  
+  // TOUS verts = scroll #activites
+  document.querySelectorAll('[style*="green"], [style*="28a745"], [style*="verte"], .green, .vert').forEach(el => {
+    el.style.cursor = 'pointer';
+    el.style.transition = 'all 0.3s';
+    el.addEventListener('mouseenter', () => el.style.transform = 'scale(1.02)');
+    el.addEventListener('mouseleave', () => el.style.transform = 'scale(1)');
+    el.addEventListener('click', () => {
+      document.querySelector('#activites, [id*="activite"], [id*="activites"]')?.scrollIntoView({behavior: 'smooth'});
+    });
+  });
+});
+</script>
 </body>
 </html>
