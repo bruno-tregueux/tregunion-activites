@@ -211,5 +211,16 @@
 4. Ctrl+A (tout sélectionner) → SUPPR
 5. Ctrl+V (coller code audio) → PAS SEULEMENT audio, LE CODE COMPLET !
 6. "Valider les modifications" → VERT
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if(target) target.scrollIntoView({behavior: 'smooth'});
+    });
+  });
+});
+</script>
 </body>
 </html>
