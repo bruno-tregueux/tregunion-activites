@@ -3,21 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TrégUnion Activités</title>
+  <title>TrégUnion Activités - Pétanque, Balades, Jeux</title>
   <style>
     html { scroll-behavior: smooth; }
-    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+    body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; max-width: 1200px; margin: auto; }
+    header { text-align: center; background: #007bff; color: white; padding: 30px; margin-bottom: 30px; }
     .banniere-verte { 
-      background: #28a745; color: white; padding: 15px; 
-      text-align: center; cursor: pointer; margin: 20px 0;
+      background: linear-gradient(45deg, #28a745, #20c997); 
+      color: white; padding: 20px; text-align: center; cursor: pointer; 
+      margin: 30px 0; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-    section { margin: 40px 0; padding: 20px; border: 1px solid #ddd; }
+    .banniere-verte:hover { transform: scale(1.02); }
+    section { margin: 50px 0; padding: 30px; border-left: 5px solid #007bff; background: #f8f9fa; }
+    h2 { color: #007bff; }
+    a { color: #28a745; text-decoration: none; }
+    a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-  <!-- TA PAGE ACTUELLE ICI -->
-  
-  <!-- AVANT </body> : SCRIPT COMPLET -->
+  <header>
+    <h1>🏸 TrégUnion - Activités Tregueux 🏸</h1>
+    <p>Pétanque • Balades • Jeux de société • Événements</p>
+  </header>
+
+  <!-- BANNière VERTE -->
+  <div class="banniere-verte" id="banniere">
+    <h2>🎾 PÉTANQUE TREG'UNION 🎾</h2>
+    <p>Cliquez pour voir les activités !</p>
+  </div>
+
+  <!-- TES ACTIVITES ICI -->
+  <section id="activites">
+    <h2>📅 Nos Activités</h2>
+    <p>Collez ici tout le contenu de votre <strong>sorties.html</strong> !</p>
+    <!-- Ctrl+V votre contenu sorties.html ici -->
+  </section>
+
   <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Scroll fluide TOUS liens #ancre
@@ -29,7 +50,7 @@
       });
     });
     
-    // Bannière verte
+    // Bannière verte → #activites
     document.querySelectorAll('.banniere-verte').forEach(banniere => {
       banniere.addEventListener('click', () => {
         document.getElementById('activites')?.scrollIntoView({behavior: 'smooth'});
