@@ -30,6 +30,10 @@
     <h1>🎉 Treg'Union nous propose</h1>
     <div class="buttons-grid" id="buttonsContainer"></div>
 </div>
+
+<!-- 🔊 BOUTON AUDIO (AVANT </body>) -->
+<button onclick="speakText()" style="position:fixed;bottom:20px;right:20px;width:70px;height:70px;border-radius:50%;background:#4a7c59;color:white;font-size:2rem;border:none;cursor:pointer;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3);">🔊</button>
+
 <script>
     const types = [
         { id: 'ballade', nom: 'Ballade', icone: '🚶', couleur: '#4caf50' },
@@ -47,6 +51,15 @@
         btn.style.backgroundColor = type.couleur;
         btn.innerHTML = `<div class="btn-icon">${type.icone}</div><div class="btn-name">${type.nom}</div>`;
         container.appendChild(btn);
+    }
+
+    // FONCTION AUDIO
+    function speakText(){
+        let text = "Trég'Union vous propose : Ballade, Cinéma, Théâtre, Resto, Visite, Jeu. Activités conviviales à Trégueux pour tous les âges.";
+        let utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'fr-FR';
+        utter.rate = 0.9;
+        speechSynthesis.speak(utter);
     }
 </script>
 </body>
