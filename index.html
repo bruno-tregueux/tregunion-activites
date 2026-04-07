@@ -2,225 +2,40 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Trég'Union</title>
-  <meta name="description" content="Trég'Union - Association solidaire et gourmande">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrégUnion Activités</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      background: linear-gradient(135deg, #fdf6ed 0%, #f5e6d3 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      font-family: 'Cormorant Garamond', serif;
-      position: relative;
+    html { scroll-behavior: smooth; }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+    .banniere-verte { 
+      background: #28a745; color: white; padding: 15px; 
+      text-align: center; cursor: pointer; margin: 20px 0;
     }
-
-    a { -webkit-tap-highlight-color: transparent; text-decoration: none; }
-
-    .logo {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-    }
-    .logo img {
-      width: 140px;
-      height: auto;
-      opacity: 0.95;
-    }
-
-    .container {
-      max-width: 800px;
-      width: 100%;
-      background: rgba(255,255,255,0.7);
-      backdrop-filter: blur(12px);
-      padding: 30px 20px;
-      border-radius: 35px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-    }
-
-    .titre { text-align: center; margin-bottom: 35px; }
-    .titre h1 {
-      font-size: 32px;
-      font-weight: 600;
-      color: #2d6a4f;
-      line-height: 1.3;
-    }
-    .titre h1 span { font-weight: 700; color: #8B2E00; }
-
-    .banniere-marron, .banniere-verte, .banniere-bleue {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      border-radius: 30px;
-      padding: 30px 25px;
-      text-align: center;
-      cursor: pointer;
-      min-height: 160px;
-      margin-bottom: 25px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .banniere-marron { background: #8B2E00; }
-    .banniere-verte { background: linear-gradient(135deg, #2d6a4f, #1b4332); }
-    .banniere-bleue { background: linear-gradient(135deg, #2C4A6E, #1a2f45); }
-
-    .banniere-marron:active,
-    .banniere-verte:active,
-    .banniere-bleue:active {
-      transform: scale(0.99);
-    }
-
-    .titre1 { font-size: 34px; font-weight: 700; color: #FFF3DC; }
-    .titre2 { font-size: 20px; color: #F5C842; letter-spacing: 3px; margin-top: 12px; }
-    .titre3 { font-size: 30px; font-weight: 700; color: #F5C842; margin-top: 12px; }
-    .sous-titre { font-size: 16px; color: #FFE4B0; margin-top: 12px; }
-
-    .vert1 { font-size: 34px; font-weight: 700; color: #d8f3dc; }
-    .vert2 { font-size: 20px; color: #b7e4c7; margin-top: 12px; font-style: italic; }
-    .vert3 { font-size: 18px; color: #f9c74f; margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 14px; }
-
-    .bleu-accueil {
-      font-size: 24px;
-      font-weight: 600;
-      color: #F5C842;
-      margin-bottom: 10px;
-      font-style: italic;
-    }
-    .bleu-titre {
-      font-size: 32px;
-      font-weight: 700;
-      color: #FFF3DC;
-      margin-bottom: 12px;
-    }
-    .bleu-slogan {
-      font-size: 22px;
-      font-style: italic;
-      color: #fde68a;
-      margin-bottom: 16px;
-    }
-    .bleu-tags {
-      font-size: 20px;
-      color: #e0f2fe;
-      border-top: 1px solid rgba(255,255,255,0.3);
-      padding-top: 14px;
-      letter-spacing: 1px;
-      font-weight: 600;
-    }
-
-    @media (max-width: 768px) {
-      body { padding: 15px; }
-      .logo img { width: 110px; }
-      .container { padding: 25px 18px; }
-      .titre h1 { font-size: 28px; }
-      
-      .banniere-marron, .banniere-verte, .banniere-bleue {
-        padding: 28px 20px;
-        min-height: 150px;
-      }
-      
-      .titre1, .vert1 { font-size: 30px; }
-      .titre2 { font-size: 18px; }
-      .titre3 { font-size: 26px; }
-      .sous-titre { font-size: 15px; }
-      .vert2 { font-size: 18px; }
-      .vert3 { font-size: 16px; }
-      
-      .bleu-accueil { font-size: 22px; }
-      .bleu-titre { font-size: 28px; }
-      .bleu-slogan { font-size: 20px; }
-      .bleu-tags { font-size: 18px; }
-    }
-
-    @media (max-width: 480px) {
-      .logo { top: 10px; left: 10px; }
-      .logo img { width: 90px; }
-      .container { padding: 20px 15px; }
-      .titre h1 { font-size: 24px; margin-bottom: 20px; }
-      
-      .banniere-marron, .banniere-verte, .banniere-bleue {
-        padding: 25px 15px;
-        border-radius: 25px;
-        margin-bottom: 20px;
-      }
-      
-      .titre1, .vert1 { font-size: 26px; }
-      .titre2 { font-size: 16px; }
-      .titre3 { font-size: 24px; }
-      .sous-titre { font-size: 14px; }
-      .vert2 { font-size: 16px; }
-      .vert3 { font-size: 15px; }
-      
-      .bleu-accueil { font-size: 20px; }
-      .bleu-titre { font-size: 24px; }
-      .bleu-slogan { font-size: 18px; }
-      .bleu-tags { font-size: 16px; }
-    }
-
-    @media (min-width: 1200px) {
-      .container { max-width: 900px; }
-      .titre h1 { font-size: 42px; }
-      .titre1, .vert1, .bleu-titre { font-size: 40px; }
-      .titre3 { font-size: 34px; }
-      .bleu-slogan { font-size: 26px; }
-      .bleu-tags { font-size: 24px; }
-    }
+    section { margin: 40px 0; padding: 20px; border: 1px solid #ddd; }
   </style>
 </head>
 <body>
-
-<div class="logo">
-  <img src="logo.png" alt="Logo Trég'Union" loading="lazy">
-</div>
-
-<div class="container">
-  <div class="titre">
-    <h1>Notre association <span>Trég'Union</span><br>vous propose...</h1>
-  </div>
-
-  <!-- Bannière 1 : On se ferait pas un... ? (verte) -->
-  <a href="activite.html" class="banniere-verte">
-    <div class="vert1">Trég'Union</div>
-    <div class="vert2">on se ferait pas un... ?</div>
-    <div class="vert3">Solidaires, ça change tout</div>
-  </a>
-
-  <!-- Bannière 2 : Trég'Gourmand (marron) -->
-  <a href="treggourmand.html" class="banniere-marron">
-    <div class="titre1">Trég'Union</div>
-    <div class="titre2">a aussi son côté</div>
-    <div class="titre3">Trég'Gourmand !</div>
-    <div class="sous-titre">Recettes du monde • Saveurs partagées</div>
-  </a>
-
-  <!-- Bannière 3 : Petit village de Trég'Union -->
-  <a href="petitvillage.html" class="banniere-bleue">
-    <div class="bleu-accueil">✨ Ici, on s'entraide ! ✨</div>
-    <div class="bleu-titre">Dans notre petit village de Trég'Union</div>
-    <div class="bleu-slogan">« Rien ne se vend, rien ne s'achète, rien ne se jette »</div>
-    <div class="bleu-tags">On prête • On troque • On donne • On s'aide</div>
-  </a>
-</div>
-1. https://github.com/bruno-tregueux/tregunion-activites
-2. CLIC "index.html" 
-3. 📝 "Modifier ce fichier"
-4. Ctrl+A (tout sélectionner) → SUPPR
-5. Ctrl+V (coller code audio) → PAS SEULEMENT audio, LE CODE COMPLET !
-6. "Valider les modifications" → VERT
- 
-</script>
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('a[href^="#"]').forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault();
-      const target = document.querySelector(link.getAttribute('href'));
-      if(target) target.scrollIntoView({behavior: 'smooth'});
+  <!-- TA PAGE ACTUELLE ICI -->
+  
+  <!-- AVANT </body> : SCRIPT COMPLET -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Scroll fluide TOUS liens #ancre
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if(target) target.scrollIntoView({behavior: 'smooth', block: 'start'});
+      });
+    });
+    
+    // Bannière verte
+    document.querySelectorAll('.banniere-verte').forEach(banniere => {
+      banniere.addEventListener('click', () => {
+        document.getElementById('activites')?.scrollIntoView({behavior: 'smooth'});
+      });
     });
   });
-});
+  </script>
 </body>
 </html>
